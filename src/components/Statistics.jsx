@@ -1,7 +1,7 @@
 import React from 'react';
 import { P } from '../styles/p';
 
-const Statistics = ({ title, good, bad, neutral, total, pos }) => {
+const Statistics = ({ good, bad, neutral, total, pos }) => {
   return (
     <div>
       <P>Good: {good}</P>

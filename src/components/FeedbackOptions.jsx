@@ -1,15 +1,16 @@
-import React from 'react'
-import { Button } from 'styles/btn'
+import React from 'react';
+import { Button } from 'styles/btn';
 
-const FeedbackOptions = ({fnGood, fnBad, fnNeutral}) => {
-
+const FeedbackOptions = ({ funcRate, options }) => {
   return (
     <div>
-      <Button onClick={fnGood}>good</Button>
-      <Button onClick={fnBad}>bad</Button>
-      <Button onClick={fnNeutral}>neutral</Button>
+      {options.map(item => (
+        <Button type="button" key={item} onClick={() => funcRate(item)}>
+          {item}
+        </Button>
+      ))}
     </div>
   );
-}
+};
 
-export default FeedbackOptions
+export default FeedbackOptions;

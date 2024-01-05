@@ -1,61 +1,63 @@
-import { useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import FeedbackOptions from './FeedbackOptions';
 import Statistics from './Statistics';
 import Section from './Section';
 
-export const App = () => {
-  const [good, setGood] = useState(0);
-  const [bad, setBad] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [positive, setPositive] = useState(0);
-  const handleGoodFeedback = () => {
-    setGood(good + 1);
-    countTotalFeedback();
+export class App extends Component {
+  state = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
   };
-  const handleBadFeedback = () => {
-    setBad(bad + 1);
-    countTotalFeedback();
+
+  handleChange = option => {
+    this.setState(prevState => ({
+      [option]: prevState[option] + 1,
+    }));
   };
-  const handleNeutralFeedback = () => {
-    setNeutral(neutral + 1);
-    countTotalFeedback();
-  };
-  const countPos = () => {
+
+  countPos = total => {
     if (total > 0) {
-      setPositive(Math.round((good / total) * 100));
+      return Math.round((this.state.good / total) * 100);
     } else {
-      setPositive(0);
+      return 0;
     }
   };
-  const countTotalFeedback = () => {
-    setTotal(total + 1);
-    countPos();
+  countTotalFeedback = () => {
+    const { bad, good, neutral } = this.state;
+    const total = bad + good + neutral;
+    this.countPos(total);
+    return total;
   };
 
-  useEffect(() => {
-    countPos();
-  });
+  render() {
+    const { good, neutral, bad } = this.state;
+    const feedbackOptions = Object.keys(this.state);
 
-  return (
-    <div>
-      <Section title="leave your feedback">
-        <FeedbackOptions
-          fnGood={handleGoodFeedback}
-          fnBad={handleBadFeedback}
-          fnNeutral={handleNeutralFeedback}
-        />
-      </Section>
-
-      <Section title="Statistics">
-        <Statistics
-          good={good}
-          bad={bad}
-          total={total}
-          neutral={neutral}
-          pos={positive}
-        />
-      </Section>
-    </div>
-  );
-};
+    return (
+      <div>
+        <Section title="leave your feedback">
+          <FeedbackOptions
+            funcRate={this.handleChange}
+            options={feedbackOptions}
+          />
+        </Section>
+        {this.countTotalFeedback() < 1 ? (
+          <Section title="Statistics">
+            <p>Nothing</p>
+          </Section>
+        ) : (
+          <Section title="Statistics">
+            <Statistics
+              good={good}
+              bad={bad}
+              total={this.countTotalFeedback()}
+              neutral={neutral}
+              pos={this.countPos(this.countTotalFeedback())}
+            />
+          </Section>
+        )}
+      </div>
+    );
+  }
+}
