@@ -16,7 +16,8 @@ export class App extends Component {
     }));
   };
 
-  countPos = total => {
+  countPositiveFeedback = () => {
+    const total = this.countTotalFeedback();
     if (total > 0) {
       return Math.round((this.state.good / total) * 100);
     } else {
@@ -24,10 +25,8 @@ export class App extends Component {
     }
   };
   countTotalFeedback = () => {
-    const { bad, good, neutral } = this.state;
-    const total = bad + good + neutral;
-    this.countPos(total);
-    return total;
+    const valuesArray = Object.values(this.state);
+    return valuesArray.reduce((a, b) => a + b);
   };
 
   render() {
@@ -42,21 +41,20 @@ export class App extends Component {
             options={feedbackOptions}
           />
         </Section>
-        {this.countTotalFeedback() < 1 ? (
-          <Section title="Statistics">
+
+        <Section title="Statistics">
+          {this.countTotalFeedback() < 1 ? (
             <p>Nothing</p>
-          </Section>
-        ) : (
-          <Section title="Statistics">
+          ) : (
             <Statistics
               good={good}
               bad={bad}
               total={this.countTotalFeedback()}
               neutral={neutral}
-              pos={this.countPos(this.countTotalFeedback())}
+              positive={this.countPositiveFeedback(this.countTotalFeedback())}
             />
-          </Section>
-        )}
+          )}
+        </Section>
       </div>
     );
   }
